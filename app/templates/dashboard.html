@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Bem-vinda, {{ current_user.usuario }}!</h1>
+<p>Você logou com sucesso.</p>
+<a href="/logout" class="btn btn-danger">Sair</a>
+{% endblock %}
