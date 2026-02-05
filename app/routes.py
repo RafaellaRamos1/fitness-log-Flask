@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_user, logout_user, login_required, current_user
-from werkzeug.security import check_password_hash
-from .models import Usuario
+from werkzeug.security import check_password_hash, generate_password_hash
+from .models import Usuario, Treino, db
 
 # Arquitetura: Blueprints permitem dividir o app em módulos
 main = Blueprint('main', __name__)
@@ -36,3 +36,33 @@ def logout():
     logout_user()
     flash('Você saiu do sistema.')
     return redirect(url_for('main.index'))
+
+@main.route('/dashboard')
+@login_required
+def dashboard():
+    # O ORM busca no banco usando a classe que você criou
+    meus_treinos = Treino.query.filter_by(usuario_id=current_user.id).all()
+    return render_template('dashboard.html', treinos=meus_treinos)
+
+@main.route('/registrar', methods=['GET', 'POST'])
+def registrar():
+    if request.method == 'POST':
+        nome = request.form.get('nome')
+        user_login = request.form.get('usuario')
+        senha = request.form.get('senha')
+
+        # Arquitetura de Segurança: Criptografando a senha antes de salvar
+        senha_hash = generate_password_hash(senha)
+
+        novo_usuario = Usuario(nome=nome, usuario=user_login, senha=senha_hash)
+        
+        try:
+            db.session.add(novo_usuario)
+            db.session.commit() # Aqui o SQLAlchemy salva no MySQL
+            flash("Usuário criado com sucesso!")
+            return redirect(url_for('main.index'))
+        except Exception as e:
+            db.session.rollback()
+            return f"Erro ao salvar: {str(e)}"
+
+    return render_template('usuarios_cadastrar.html')

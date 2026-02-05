@@ -8,8 +8,6 @@ login_manager = LoginManager()
 def create_app():
     app = Flask(__name__)
 
-    # --- CONFIGURAÇÃO DO BANCO ---
-    # Se o seu MySQL tiver senha, coloque depois dos dois pontos (root:SUASENHA@...)
     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@localhost/fitness_db'
     app.config['SECRET_KEY'] = 'chave-secreta-arquitetura'
     

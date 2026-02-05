@@ -1,6 +1,32 @@
 {% extends "base.html" %}
+
 {% block content %}
-<h1>Bem-vinda, {{ current_user.usuario }}!</h1>
-<p>Você logou com sucesso.</p>
-<a href="/logout" class="btn btn-danger">Sair</a>
+<div class="container">
+    <h1>Bem-vinda, {{ current_user.usuario }}!</h1>
+    <p>Você logou com sucesso.</p>
+    
+    <h3>Seus Treinos</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Data</th>
+                <th>Exercício</th>
+                <th>Duração</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for treino in treinos %}
+            <tr>
+                <td>{{ treino.data.strftime('%d/%m/%Y') }}</td>
+                <td>{{ treino.tipo.descricao }}</td>
+                <td>{{ treino.duracao }} min</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <hr>
+    <a href="{{ url_for('main.registrar') }}" class="btn btn-primary">Cadastrar Novo Usuário</a>
+    <a href="{{ url_for('main.logout') }}" class="btn btn-danger">Sair</a>
+</div>
 {% endblock %}
