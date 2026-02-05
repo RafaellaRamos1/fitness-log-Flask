@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <h2 class="mb-4 text-warning"><i class="bi bi-pencil"></i> Editar: {{ user_data.usuario }}</h2>
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Nome Completo</label>
+                        <input type="text" name="nome" class="form-control" value="{{ user_data.nome }}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Usuário</label>
+                        <input type="text" name="usuario" class="form-control" value="{{ user_data.usuario }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Email</label>
+                        <input type="email" name="email" class="form-control" value="{{ user_data.email }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Nova Senha (deixe em branco para não alterar)</label>
+                        <input type="password" name="senha" class="form-control">
+                    </div>
+
+                    {% if not is_self_edit %}
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Nível de Acesso</label>
+                        <select name="nivel" class="form-select">
+                            <option value="Comum" {% if user_data.nivel == 'Comum' %}selected{% endif %}>Comum</option>
+                            <option value="Admin" {% if user_data.nivel == 'Admin' %}selected{% endif %}>Admin</option>
+                        </select>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-info small">Você não pode alterar seu próprio nível.</div>
+                    {% endif %}
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                        <a href="{{ url_for('main.gerenciar_usuarios') }}" class="btn btn-secondary">Cancelar</a>
+                        <button type="submit" class="btn btn-warning text-white">Salvar Alterações</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="text-warning"><i class="bi bi-people"></i> Gerenciar Usuários</h2>
+    <a href="{{ url_for('main.cadastrar_usuario') }}" class="btn btn-warning shadow-sm">
+        <i class="bi bi-person-plus-fill"></i> Novo Usuário
+    </a>
+</div>
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<div class="card shadow-sm border-0">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>ID</th>
+                    <th>Usuário</th>
+                    <th>Email</th>
+                    <th>Nível</th>
+                    <th class="text-center">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in usuarios %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td class="fw-bold">{{ user.usuario }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>
+                        <span class="badge {% if user.nivel == 'Admin' %}bg-danger{% else %}bg-secondary{% endif %}">
+                            {{ user.nivel }}
+                        </span>
+                    </td>
+                    <td class="text-center">
+                        {% if user.id != current_user.id %}
+                            <a href="{{ url_for('main.editar_usuario', id=user.id) }}" class="btn btn-sm btn-outline-warning me-1">
+                                <i class="bi bi-pencil"></i> Editar
+                            </a>
+                            <a href="{{ url_for('main.excluir_usuario', id=user.id) }}" 
+                               class="btn btn-sm btn-outline-danger" 
+                               onclick="return confirm('Tem certeza que deseja excluir o usuário {{ user.usuario }}?')">
+                                <i class="bi bi-trash"></i> Excluir
+                            </a>
+                        {% else %}
+                            <span class="text-muted small fst-italic">Você</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

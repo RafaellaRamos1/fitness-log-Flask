@@ -33,7 +33,7 @@ $caminho = (basename(getcwd()) == 'fitness_log') ? '' : '../';
                             <a class="nav-link active" href="index.php">Meus Treinos</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="treinos_cadastrar.php">Cadastrar Exercício</a>
+                            <a class="nav-link" href="{{ url_for('main.cadastrar_treino') }}">Cadastrar Exercício</a>
                         </li>
                         <?php if (isset($_SESSION['usuario_nivel']) && $_SESSION['usuario_nivel'] == 'Admin'): ?>
                             <li class="nav-item">

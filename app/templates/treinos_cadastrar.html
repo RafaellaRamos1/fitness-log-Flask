@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <h1 class="mb-4 text-warning"><i class="bi bi-stopwatch"></i> Registrar Novo Treino</h1>
+
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4">
+                {% with messages = get_flashed_messages() %}
+                  {% if messages %}
+                    {% for message in messages %}
+                      <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                      </div>
+                    {% endfor %}
+                  {% endif %}
+                {% endwith %}
+                <form method="POST">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Tipo de Atividade</label>
+                        <div class="input-group">
+                            <select class="form-select" name="tipo_exercicio_id" required>
+                                <option value="">Selecione o exercício...</option>
+                                {% for tipo in tipos %}
+                                    <option value="{{ tipo.id }}">
+                                        {{ tipo.descricao }} (aprox. {{ tipo.calorias_por_minuto }} cal/min)
+                                    </option>
+                                {% endfor %}
+                            </select>
+                            <a href="{{ url_for('main.novo_tipo_exercicio') }}" class="btn btn-outline-secondary">
+                                <i class="bi bi-plus-lg"></i> Novo
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Duração (minutos)</label>
+                            <input type="number" name="duracao_minutos" class="form-control" required min="1" placeholder="Ex: 45">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Data do Treino</label>
+                            <input type="date" name="data_treino" class="form-control" required value="{{ data_atual }}">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Observações (Opcional)</label>
+                        <textarea class="form-control" name="observacoes" rows="3" placeholder="Como se sentiu?"></textarea>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                        <a href="{{ url_for('main.dashboard') }}" class="btn btn-secondary me-md-2">Cancelar</a>
+                        <button type="submit" class="btn btn-warning btn-lg px-5 text-white">Salvar Treino</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

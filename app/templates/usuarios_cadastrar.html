@@ -1,21 +1,43 @@
 {% extends "base.html" %}
-
 {% block content %}
-<div class="container">
-    <h2>Cadastrar Novo Usuário</h2>
-    <form method="POST">
-        <div class="mb-3">
-            <input type="text" name="nome" class="form-control" placeholder="Nome Completo" required>
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <h2 class="mb-4 text-warning"><i class="bi bi-person-plus"></i> Novo Usuário</h2>
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Nome</label>
+                        <input type="text" name="nome" class="form-control" required placeholder="Ex: joao">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Usuário</label>
+                        <input type="text" name="usuario" class="form-control" required placeholder="Ex: joao">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Email</label>
+                        <input type="email" name="email" class="form-control" required placeholder="joao@email.com">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Senha</label>
+                        <input type="password" name="senha" class="form-control">
+                    </div>
+                    {% if current_user.is_authenticated and current_user.nivel == 'Admin' %}
+                    <div class="mb-3">
+                        <label class="form-label">Nível de Acesso</label>
+                        <select name="nivel" class="form-select">
+                            <option value="Comum">Comum</option>
+                            <option value="Admin">Admin</option>
+                        </select>
+                    </div>
+                    {% endif %}
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                        <a href="{{ url_for('main.gerenciar_usuarios') }}" class="btn btn-secondary">Cancelar</a>
+                        <button type="submit" class="btn btn-warning text-white">Cadastrar Usuário</button>
+                    </div>
+                </form>
+            </div>
         </div>
-        <div class="mb-3">
-            <input type="text" name="usuario" class="form-control" placeholder="Nome de Usuário" required>
-        </div>
-        <div class="mb-3">
-            <input type="password" name="senha" class="form-control" placeholder="Senha" required>
-        </div>
-        <button type="submit" class="btn btn-success">Salvar Cadastro</button>
-    </form>
-    <br>
-    <a href="{{ url_for('main.index') }}">Voltar para o Início</a>
+    </div>
 </div>
 {% endblock %}

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <h2 class="mb-4 text-warning"><i class="bi bi-plus-circle-dotted"></i> Novo Exercício</h2>
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Nome do Exercício</label>
+                        <input type="text" class="form-control" name="nome" required placeholder="Ex: CrossFit, Zumba...">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Calorias (Estimativa por min)</label>
+                        <input type="number" class="form-control" name="calorias_por_minuto" required value="5">
+                    </div>
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                        <a href="{{ url_for('main.cadastrar_treino') }}" class="btn btn-secondary">Cancelar</a>
+                        <button type="submit" class="btn btn-warning text-white">Salvar e Voltar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
