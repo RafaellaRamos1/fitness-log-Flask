@@ -52,9 +52,10 @@ def dashboard():
     meus_treinos = query.order_by(Treino.data.desc()).all()
     
     print(f"DEBUG: Usuário {current_user.id} - Treinos encontrados: {len(meus_treinos)}")
-    
-    return render_template('dashboard.html', treinos=meus_treinos)
 
+    total_calorias = sum(t.duracao * t.tipo.calorias_por_minuto for t in meus_treinos)
+    return render_template('dashboard.html', treinos=meus_treinos, total=total_calorias)
+    
 @main.route('/registrar', methods=['GET', 'POST'])
 def registrar():
     if request.method == 'POST':
@@ -63,7 +64,7 @@ def registrar():
         email = request.form.get('email')
         senha = request.form.get('senha')
 
-#       1. VERIFICAÇÃO: O usuário já existe?
+        # Verificação de usuário
         usuario_existente = Usuario.query.filter_by(usuario=user_login).first()
         email_existente = Usuario.query.filter_by(email=email).first()
 
@@ -243,3 +244,59 @@ def editar_usuario(id):
             flash(f'Erro ao salvar: {str(e)}', 'danger')
 
     return render_template('usuarios_editar.html', user_data=user, is_self_edit=is_self_edit)
+
+@main.route('/treino/excluir/<int:id>')
+@login_required
+def excluir_treino(id):
+    # Busca o treino ou retorna 404 se não existir
+    treino = Treino.query.get_or_404(id)
+    
+    # Arquitetura de Segurança: Verifica se o treino pertence ao usuário logado
+    if treino.usuario_id != current_user.id:
+        flash('Você não tem permissão para excluir este treino!', 'danger')
+        return redirect(url_for('main.dashboard'))
+    
+    try:
+        db.session.delete(treino)
+        db.session.commit()
+        flash('Treino removido com sucesso!', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Erro ao excluir: {str(e)}', 'danger')
+        
+    return redirect(url_for('main.dashboard'))
+
+@main.route('/treino/editar/<int:id>', methods=['GET', 'POST'])
+@login_required
+def editar_treino(id):
+    # Busca o treino ou retorna 404
+    treino = Treino.query.get_or_404(id)
+    
+    # Segurança: Garante que o usuário só edite os próprios treinos 
+    if treino.usuario_id != current_user.id:
+        flash('Acesso negado!', 'danger')
+        return redirect(url_for('main.dashboard'))
+
+    # Busca tipos de exercício para o select do formulário 
+    tipos = TipoExercicio.query.all()
+
+    if request.method == 'POST':
+        try:
+            # Atualiza os campos com os dados do formulário 
+            treino.tipo_id = request.form.get('tipo_exercicio_id')
+            treino.duracao = request.form.get('duracao_minutos')
+            
+            # Converte a string de data do HTML para objeto date do Python 
+            data_str = request.form.get('data_treino')
+            treino.data = datetime.strptime(data_str, '%Y-%m-%d').date()
+            
+            treino.observacoes = request.form.get('observacoes')
+
+            db.session.commit()
+            flash('Treino atualizado com sucesso!', 'success')
+            return redirect(url_for('main.dashboard'))
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Erro ao atualizar: {str(e)}', 'danger')
+
+    return render_template('treinos_editar.html', treino=treino, tipos=tipos)

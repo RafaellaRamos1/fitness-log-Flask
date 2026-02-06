@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <h2 class="mb-4 text-warning"><i class="bi bi-pencil-square"></i> Editar Treino</h2>
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Tipo de Atividade</label>
+                        <select class="form-select" name="tipo_exercicio_id" required>
+                            {% for tipo in tipos %}
+                                <option value="{{ tipo.id }}" {% if tipo.id == treino.tipo_id %}selected{% endif %}>
+                                    {{ tipo.descricao }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Duração (minutos)</label>
+                            <input type="number" name="duracao_minutos" class="form-control" value="{{ treino.duracao }}" required min="1">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Data do Treino</label>
+                            <input type="date" name="data_treino" class="form-control" value="{{ treino.data.strftime('%Y-%m-%d') }}" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Observações</label>
+                        <textarea class="form-control" name="observacoes" rows="3">{{ treino.observacoes }}</textarea>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                        <a href="{{ url_for('main.dashboard') }}" class="btn btn-secondary">Cancelar</a>
+                        <button type="submit" class="btn btn-warning text-white">Salvar Alterações</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
