@@ -1,61 +1,84 @@
-# 🏋️ Fitness Log - Sistema de Registro de Treinos
+# Fitness Log - Flask Professional Edition
 
-Sistema web desenvolvido para gerenciamento de treinos diários, permitindo o registro de atividades físicas, cálculo de calorias gastas e acompanhamento histórico.
+Este projeto é um sistema de gerenciamento de treinos e calorias, reconstruído do zero utilizando o micro-framework **Flask**. A aplicação segue padrões modernos de Engenharia de Software, focando em modularização, segurança e escalabilidade.
 
-Projeto desenvolvido para a disciplina de Desenvolvimento Web II.
+## Decisões Arquiteturais
 
-## 🚀 Funcionalidades
+Para atender aos requisitos de **Arquitetura de Software**, foram aplicados os seguintes padrões:
 
-* **Autenticação:** Sistema de Login e Logout seguro (Senhas com Hash).
-* **Dashboard:** Visualização de todos os treinos com cálculo automático de calorias totais.
-* **CRUD Completo:** Registrar, Editar e Excluir treinos.
-* **Tipos de Exercício:** Cadastro de exercícios personalizados (Ex: Crossfit, Zumba) que ficam salvos para o usuário.
-* **Filtros:** Busca de treinos por data específica.
-* **Gestão de Usuários:** O Administrador pode cadastrar novos usuários para o sistema.
+* **Application Factory:** Centralização da criação do app no arquivo `app/__init__.py`, facilitando testes e múltiplas instâncias.
+* **Modularização com Blueprints:** Separação das rotas por contexto, evitando arquivos extensos e melhorando a manutenção.
+* **ORM (Object-Relational Mapping):** Uso do **SQLAlchemy** para abstração da camada de banco de dados, tratando tabelas como classes Python.
+* **CLI Customizado:** Implementação de comandos de terminal via **Click** para automação de tarefas (Setup do banco e gestão de usuários).
+* **Segurança:** Hashing de senhas com `scrypt` e isolamento de configurações sensíveis via variáveis de ambiente (`.env`).
 
-## 🛠️ Tecnologias Utilizadas
+---
 
-* **PHP 8+** (Estruturado/Procedural)
-* **MySQL** (Banco de Dados Relacional)
-* **Bootstrap 5** (Interface Responsiva)
-* **XAMPP** (Servidor Apache Local)
+## Guia de Instalação e Execução
 
-## 📦 Como Rodar o Projeto
+Siga os passos abaixo para rodar o projeto em seu ambiente local:
 
-Siga os passos abaixo para instalar o sistema na sua máquina:
-
-### 1. Pré-requisitos
-Certifique-se de ter o **XAMPP** instalado e os serviços **Apache** e **MySQL** rodando.
-
-### 2. Clonar o Repositório
-Abra o terminal na pasta `htdocs` do seu XAMPP (`C:\xampp\htdocs` no Windows ou `/opt/lampp/htdocs` no Linux) e execute:
-
+### 1. Preparação do Diretório
+Acesse a pasta raiz:
 ```bash
-git clone [https://github.com/milenabmota/Fitness-Log.git](https://github.com/milenabmota/Fitness-Log.git) fitness_log
+cd fitness-log-Flask
 ```
-
-### 3. Configurar o Banco de Dados
-* 1. Acesse o phpMyAdmin (http://localhost/phpmyadmin).
-* 2. Crie um novo banco de dados com o nome: fitness_db.
-* 3. Clique na aba Importar.
-* 4. Selecione o arquivo fitness_db.sql que está dentro da pasta do projeto baixado.
-* 5. Clique em Executar para criar as tabelas e usuários padrões.
-
-### 4. Configuração de Conexão (Opcional)
-O sistema já vem configurado para rodar localmente. Caso tenha problemas de conexão, verifique o arquivo config/database.php:
+### 2. Crie e ative o ambiente isolado do Python:
 ```bash
-$servername = "127.0.0.1"; // Ou "localhost"
-$username = "root";
-$password = "";
-$dbname = "fitness_db";
+python3 -m venv .venv
+
+# No Windows:
+.venv\Scripts\activate
+
+# No Linux/Mac:
+source .venv/bin/activate
 ```
-## 🖥️ Como Acessar
-#### 1. Abra seu navegador
-#### 2. Acesse: `http://localhost/fitness-log` (ou o nome da pasta que você clonou).
+### 3. Instale todos os pacotes necessários:
+```bash
+pip install -r requirements.txt
+```
+### 4. Configuração do Banco de Dados
+Certifique-se de que o MySQL (XAMPP/MariaDB) está em execução. Crie um arquivo chamado .env na raiz do projeto e adicione suas credenciais:
+```bash
+SECRET_KEY=sua_chave_secreta_aqui  
+DATABASE_URL=mysql+pymysql://root:@localhost/fitness_db  
+```
+### 5. Execute o comando para criar as tabelas automaticamente:
+```bash
+flask create-db
+```
+### 5. Criação do Usuário Administrador
+Utilize o comando CLI para criar o acesso inicial sem precisar de SQL manual:
+```bash
+flask add-user "Seu Nome" seu_usuario --password sua_senha --email seu@email.com
+```
+### 6. Execução
+Inicie o servidor de desenvolvimento:
+```bash
+flask run
+```
+Acesse em seu navegador: http://127.0.0.1:5000
 
-🔑 Credenciais de Acesso (Admin)
-Para o primeiro acesso, utilize o usuário administrador padrão :
+## Tecnologias Utilizadas
+Linguagem: Python 3.12+  
+Framework Web: Flask  
+Banco de Dados: MySQL / MariaDB  
 
-`Usuário: admin`
+## Interface:  
+Bootstrap 5 & Jinja2 Templates  
 
-`Senha: 123456`
+## Gestão de Sessão: 
+Flask-Login  
+Painel Admin: Flask-Admin (acessível em /admin)
+
+## Estrutura de Pastas
+fitness-log-Flask/
+├── app/                # Pacote principal da aplicação
+│   ├── static/         # CSS e Imagens
+│   ├── templates/      # HTML (Jinja2)
+│   ├── models.py       # Definição das Entidades (ORM)
+│   └── routes.py       # Lógica das rotas (Blueprints)
+├── config.py           # Classe de configuração Python
+├── run.py              # Ponto de entrada
+├── .env.example        # Modelo de configuração de ambiente
+└── requirements.txt    # Lista de dependências
